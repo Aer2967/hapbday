@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Photo Album</title>
+
+<style>
+/* ================= GLOBAL ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  color: white;
+  background: black;
+}
+
+/* ================= BACKGROUND IMAGE ================= */
+.background {
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+    url("/assets/starbucks.jpg"); /* CHANGE IMAGE HERE */
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+}
+
+/* ================= DIM OVERLAY ================= */
+.dim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+}
+.dim.active { opacity: 1; }
+
+/* ================= HAMBURGER & TITLE ================= */
+.menu { position: fixed; top: 20px; left: 20px; z-index: 50; }
+.menu-btn { width: 35px; height: 25px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
+.menu-btn span { height: 4px; background: white; border-radius: 5px; }
+.menu-panel { position: absolute; top: 50px; left: 0; background: rgba(0,0,0,0.85); padding: 15px; border-radius: 12px; display: none; }
+.menu-panel a { display: block; background: #00754a; color: white; text-decoration: none; padding: 10px 16px; border-radius: 20px; margin-top: 8px; text-align: center; }
+
+h1 {
+  position: fixed;
+  top: 30px;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  letter-spacing: 1px;
+  z-index: 10;
+}
+
+/* ================= 3D CAROUSEL ================= */
+.carousel-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 2000px;
+  z-index: 5;
+}
+
+.carousel {
+  position: relative;
+  width: 320px;
+  height: 420px;
+  transform-style: preserve-3d;
+  animation: spin 18s linear infinite;
+  transition: transform 0.5s ease;
+}
+.carousel.paused { animation-play-state: paused; }
+
+/* ================= CARDS ================= */
+.card {
+  position: absolute;
+  width: 180px;
+  height: 280px;
+  left: 50%;
+  top: 50%;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  filter: brightness(0.8);
+  transition: filter 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Position Variables */
+.card:nth-child(1) { --rot: 0deg; }
+.card:nth-child(2) { --rot: 60deg; }
+.card:nth-child(3) { --rot: 120deg; }
+.card:nth-child(4) { --rot: 180deg; }
+.card:nth-child(5) { --rot: 240deg; }
+.card:nth-child(6) { --rot: 300deg; }
+
+.card {
+  transform: translate(-50%, -50%) rotateY(var(--rot)) translateZ(350px);
+}
+
+/* ================= PUNCH THROUGH EFFECT ================= */
+.carousel:hover .card {
+  filter: brightness(0.3) grayscale(0.5);
+}
+
+.carousel .card:hover {
+  filter: brightness(1.2) grayscale(0) !important;
+  transform: translate(-50%, -50%) rotateY(var(--rot)) translateZ(450px) scale(1.2);
+  box-shadow: 0 0 50px rgba(255,255,255,0.3);
+  z-index: 100;
+}
+
+@keyframes spin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<div class="background"></div>
+<div class="dim" id="dim"></div>
+
+<!-- MENU -->
+<div class="menu">
+  <div class="menu-btn" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="menu-panel" id="menuPanel">
+    <a href="index.html">Home</a>
+    <a href="song.html">Songs</a>
+  </div>
+</div>
+
+<h1>Photo Album</h1>
+
+<!-- CAROUSEL -->
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+    <div class="card"><img src="/assets/image1.jpg"></div>
+    <div class="card"><img src="/assets/image2.jpg"></div>
+    <div class="card"><img src="/assets/image3.jpg"></div>
+    <div class="card"><img src="/assets/image4.jpg"></div>
+    <div class="card"><img src="/assets/image5.jpg"></div>
+    <div class="card"><img src="/assets/image6.webp"></div>
+  </div>
+</div>
+
+<script>
+function toggleMenu() {
+  const m = document.getElementById("menuPanel");
+  m.style.display = m.style.display === "block" ? "none" : "block";
+}
+
+const carousel = document.getElementById("carousel");
+const dim = document.getElementById("dim");
+
+carousel.addEventListener("mouseenter", () => {
+  carousel.classList.add("paused");
+  dim.classList.add("active");
+});
+
+carousel.addEventListener("mouseleave", () => {
+  carousel.classList.remove("paused");
+  dim.classList.remove("active");
+});
+</script>
+
+</body>
+</html>

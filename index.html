@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Happy Birthday </title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  background: black;
+}
+
+/* ===== BACKGROUND ===== */
+.background {
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+    url(/assets/starbucks.jpg);
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== HAMBURGER MENU ===== */
+.menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 20;
+}
+
+.menu-btn {
+  width: 35px;
+  height: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.menu-btn span {
+  height: 4px;
+  background: white;
+  border-radius: 5px;
+}
+
+.menu-panel {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  background: rgba(0,0,0,0.85);
+  padding: 15px;
+  border-radius: 12px;
+  display: none;
+}
+
+.menu-panel a {
+  display: block;
+  background: #00754a;
+  color: white;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 20px;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* ===== SCENE ===== */
+.scene {
+  position: absolute;
+  bottom: 110px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+}
+
+/* ===== CUP ===== */
+.cup {
+  width: 110px;
+  height: 200px;
+  background: linear-gradient(#5a3a26, #2d1a10);
+  border-radius: 25px;
+  position: relative;
+}
+
+.cup::before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: 10px;
+  width: 90px;
+  height: 20px;
+  background: #eee;
+  border-radius: 20px;
+}
+
+.logo {
+  position: absolute;
+  top: 80px;
+  left: 30px;
+  width: 50px;
+  height: 50px;
+  background: #00754a;
+  border-radius: 50%;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: black;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.cup:hover .tooltip {
+  opacity: 1;
+}
+
+/* ===== CAKE ===== */
+.cake {
+  position: relative;
+  width: 180px;
+  cursor: pointer;
+}
+
+.layer {
+  height: 40px;
+  border-radius: 10px;
+}
+
+.top { background: #7aa8ff; }
+.mid { background: #b8a1ff; }
+.bot { background: #6b5cff; }
+
+.candle {
+  position: absolute;
+  top: -40px;
+  left: 85px;
+  width: 10px;
+  height: 35px;
+  background: #3fd2b8;
+}
+
+.flame {
+  position: absolute;
+  top: -15px;
+  left: -3px;
+  width: 16px;
+  height: 16px;
+  background: orange;
+  border-radius: 50%;
+}
+
+/* ===== TABLE ===== */
+.table {
+  position: fixed;
+  bottom: 0;
+  height: 160px;
+  width: 100%;
+  background: linear-gradient(#4a2d1a, #2a160c);
+}
+
+/* ===== BUTTONS ===== */
+.controls {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  gap: 15px;
+  z-index: 10;
+}
+
+.controls button {
+  background: #00754a;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+/* ===== LETTER MODAL ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 30;
+}
+
+.letter {
+  background: white;
+  width: 360px;
+  max-height: 70vh;
+  padding: 22px;
+  border-radius: 16px;
+  overflow-y: auto;
+}
+
+.close {
+  text-align: right;
+  cursor: pointer;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="background" id="bg"></div>
+
+<!-- MENU -->
+<div class="menu">
+  <div class="menu-btn" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="menu-panel" id="menuPanel">
+    <a href="album.html">📸 Photo Album</a>
+    <a href="song.html">🎶 Songs</a>
+  </div>
+</div>
+
+<!-- SCENE -->
+<div class="scene" id="scene">
+  <div class="cup">
+    <div class="tooltip">Iced Americano ☕</div>
+    <div class="logo"></div>
+  </div>
+
+  <div class="cake" onclick="blowCandle()">
+    <div class="candle"><div class="flame" id="flame"></div></div>
+    <div class="layer top"></div>
+    <div class="layer mid"></div>
+    <div class="layer bot"></div>
+  </div>
+</div>
+
+<div class="table"></div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <button onclick="toggleMusic()">▶ Music</button>
+  <button onclick="openLetter()">💌 Letter</button>
+</div>
+
+<!-- LETTER -->
+<div class="overlay" id="overlay">
+  <div class="letter">
+    <div class="close" onclick="closeLetter()">✕</div>
+    <p>
+      To the girl na may pinakamalakas na saltik, pinakacorny na jokes, yet one of the people I'm thankful that I met this year, happy birthday!!<br><br>
+      Sige na, seseryosohin ko na 'tong letter na 'to dahil napakatanda mo na LMAOO. 
+      Grabe yung lore drops natin nung last gala HELP. I hope you know though that even if I struggle to put into words how much I appreciate you, I'll always try in the smallest ways.
+      Yes napaptawa mo ako sa napakacorny mong jokes kahit ayoko naman. 
+      Yes, I appreciate every moment we spend together and every memory we made and continue to make. 
+      
+      <br><br>You are one of the kindest, most genuine people I know. Ito nalang birthday gift ko cuz lowk pulubi na ako LMAOO.
+      Sana magkachance ka kay [redacted] AHWHAHAHAH. Basta bro, I'm cheering you on through everything you decide to do in your life.
+
+      <br><br>Just know I'm always here for you for absolutely anything. Kahit 3am pa yan, alam mo nang online ako niyan LMAO. Again, happy happy birthday and I hope you enjoy your day!
+      <br><br>— R
+    </p>
+  </div>
+</div>
+
+<audio id="music" loop>
+  <source src="/assets/music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+document.addEventListener("mousemove", e => {
+  const x = (e.clientX / innerWidth - 0.5) * 20;
+  const y = (e.clientY / innerHeight - 0.5) * 20;
+  bg.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+  scene.style.transform = `translate(${x/2}px, ${y/2}px)`;
+});
+
+function toggleMenu() {
+  const m = document.getElementById("menuPanel");
+  m.style.display = m.style.display === "block" ? "none" : "block";
+}
+
+function openLetter() {
+  overlay.style.display = "flex";
+}
+
+function closeLetter() {
+  overlay.style.display = "none";
+}
+
+function blowCandle() {
+  document.getElementById("flame").style.display = "none";
+}
+
+const music = document.getElementById("music");
+function toggleMusic() {
+  music.paused ? music.play() : music.pause();
+}
+</script>
+
+</body>
+</html>
