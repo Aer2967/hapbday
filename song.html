@@ -14,8 +14,8 @@
 }
 
 body {
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: hidden;
   background: black;
   color: white;
 }
@@ -36,14 +36,14 @@ body {
 /* ===== HAMBURGER ===== */
 .menu {
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: 16px;
+  left: 16px;
   z-index: 20;
 }
 
 .menu-btn {
-  width: 35px;
-  height: 25px;
+  width: 32px;
+  height: 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -58,10 +58,10 @@ body {
 
 .menu-panel {
   position: absolute;
-  top: 50px;
+  top: 46px;
   left: 0;
   background: rgba(0,0,0,0.85);
-  padding: 15px;
+  padding: 14px;
   border-radius: 12px;
   display: none;
 }
@@ -81,22 +81,23 @@ body {
 h1 {
   text-align: center;
   margin-top: 90px;
-  margin-bottom: 30px;
-  font-size: 2rem;
+  margin-bottom: 24px;
+  font-size: clamp(1.4rem, 5vw, 2.2rem);
+  padding: 0 16px;
 }
 
 /* ===== CAROUSEL ===== */
 .carousel-wrapper {
   position: relative;
-  height: 55vh;
+  height: auto;
   display: flex;
   align-items: center;
 }
 
 .carousel {
   display: flex;
-  gap: 20px;
-  padding: 30px 60px;
+  gap: clamp(12px, 4vw, 20px);
+  padding: 20px clamp(20px, 5vw, 60px);
   overflow-x: auto;
   scroll-behavior: smooth;
 }
@@ -107,8 +108,8 @@ h1 {
 
 /* ===== SONG CARD ===== */
 .song {
-  min-width: 240px;
-  height: 90px;
+  min-width: clamp(200px, 75vw, 260px);
+  height: clamp(80px, 14vw, 95px);
   background: rgba(255,255,255,0.1);
   border-radius: 18px;
   padding: 14px 16px;
@@ -120,16 +121,17 @@ h1 {
 }
 
 .song:hover {
-  transform: scale(1.08) translateY(-8px);
+  transform: scale(1.06) translateY(-6px);
   box-shadow: 0 20px 40px rgba(0,0,0,0.7);
   background: rgba(255,255,255,0.16);
 }
 
 .album-art {
-  width: 60px;
-  height: 60px;
+  width: clamp(48px, 14vw, 60px);
+  height: clamp(48px, 14vw, 60px);
   border-radius: 10px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .album-art img {
@@ -145,10 +147,11 @@ h1 {
 
 .song-title {
   font-weight: 600;
+  font-size: clamp(0.9rem, 3vw, 1rem);
 }
 
 .artist {
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 2.5vw, 0.85rem);
   opacity: 0.8;
 }
 
@@ -173,15 +176,15 @@ h1 {
 .equalizer span:nth-child(2) { animation-delay: 0.2s; }
 .equalizer span:nth-child(3) { animation-delay: 0.4s; }
 
-.song:hover .equalizer {
+.song.active .equalizer {
   opacity: 1;
 }
 
-.song:not(:hover) .equalizer span {
+.song:not(.active) .equalizer span {
   animation-play-state: paused;
 }
 
-.song:hover .equalizer span {
+.song.active .equalizer span {
   animation-play-state: running;
 }
 
@@ -199,14 +202,21 @@ h1 {
   background: rgba(0,0,0,0.6);
   border: none;
   color: white;
-  font-size: 28px;
-  padding: 12px 18px;
+  font-size: 26px;
+  padding: 10px 14px;
   cursor: pointer;
   border-radius: 50%;
 }
 
-.prev { left: 15px; }
-.next { right: 15px; }
+/* Hide arrows on mobile */
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+}
+
+.prev { left: 10px; }
+.next { right: 10px; }
 </style>
 </head>
 
@@ -306,24 +316,43 @@ const bg = document.getElementById("bg");
 const songCards = document.querySelectorAll(".song");
 
 let currentAudio = null;
+let currentCard = null;
 
 songCards.forEach(card => {
   const audio = new Audio(card.dataset.audio);
   audio.volume = 0.6;
 
-  card.addEventListener("mouseenter", () => {
+  const play = () => {
     if (currentAudio && currentAudio !== audio) {
       currentAudio.pause();
       currentAudio.currentTime = 0;
+      currentCard.classList.remove("active");
     }
     currentAudio = audio;
+    currentCard = card;
+    card.classList.add("active");
     audio.currentTime = 0;
     audio.play();
+  };
+
+  const stop = () => {
+    audio.pause();
+    audio.currentTime = 0;
+    card.classList.remove("active");
+  };
+
+  // Desktop hover
+  card.addEventListener("mouseenter", () => {
+    if (window.innerWidth > 768) play();
   });
 
   card.addEventListener("mouseleave", () => {
-    audio.pause();
-    audio.currentTime = 0;
+    if (window.innerWidth > 768) stop();
+  });
+
+  // Mobile tap
+  card.addEventListener("click", () => {
+    if (window.innerWidth <= 768) play();
   });
 });
 
@@ -337,9 +366,11 @@ function toggleMenu() {
 }
 
 document.addEventListener("mousemove", e => {
-  const x = (e.clientX / innerWidth - 0.5) * 20;
-  const y = (e.clientY / innerHeight - 0.5) * 20;
-  bg.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+  if (window.innerWidth > 768) {
+    const x = (e.clientX / innerWidth - 0.5) * 20;
+    const y = (e.clientY / innerHeight - 0.5) * 20;
+    bg.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+  }
 });
 </script>
 

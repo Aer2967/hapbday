@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Happy Birthday </title>
+<title>Happy Birthday</title>
 
 <style>
 * {
@@ -14,8 +14,8 @@
 }
 
 body {
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: hidden;
   background: black;
 }
 
@@ -25,22 +25,24 @@ body {
   inset: 0;
   background:
     linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-    url(./assets/starbucks.jpg);
+    url("./assets/starbucks.jpg");
   background-size: cover;
   background-position: center;
+  transition: transform 0.2s ease;
+  z-index: -1;
 }
 
 /* ===== HAMBURGER MENU ===== */
 .menu {
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: 16px;
+  left: 16px;
   z-index: 20;
 }
 
 .menu-btn {
-  width: 35px;
-  height: 25px;
+  width: 32px;
+  height: 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -55,10 +57,10 @@ body {
 
 .menu-panel {
   position: absolute;
-  top: 50px;
+  top: 46px;
   left: 0;
   background: rgba(0,0,0,0.85);
-  padding: 15px;
+  padding: 14px;
   border-radius: 12px;
   display: none;
 }
@@ -77,17 +79,18 @@ body {
 /* ===== SCENE ===== */
 .scene {
   position: absolute;
-  bottom: 110px;
+  bottom: clamp(120px, 20vw, 160px);
   width: 100%;
   display: flex;
   justify-content: center;
-  gap: 80px;
+  gap: clamp(40px, 10vw, 80px);
+  padding: 0 20px;
 }
 
 /* ===== CUP ===== */
 .cup {
-  width: 110px;
-  height: 200px;
+  width: clamp(80px, 18vw, 110px);
+  height: clamp(150px, 32vw, 200px);
   background: linear-gradient(#5a3a26, #2d1a10);
   border-radius: 25px;
   position: relative;
@@ -97,26 +100,27 @@ body {
   content: "";
   position: absolute;
   top: -15px;
-  left: 10px;
-  width: 90px;
-  height: 20px;
+  left: 10%;
+  width: 80%;
+  height: 18px;
   background: #eee;
   border-radius: 20px;
 }
 
 .logo {
   position: absolute;
-  top: 80px;
-  left: 30px;
-  width: 50px;
-  height: 50px;
+  top: 45%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(35px, 8vw, 50px);
+  height: clamp(35px, 8vw, 50px);
   background: #00754a;
   border-radius: 50%;
 }
 
 .tooltip {
   position: absolute;
-  bottom: 220px;
+  bottom: 105%;
   left: 50%;
   transform: translateX(-50%);
   background: black;
@@ -128,19 +132,22 @@ body {
   transition: 0.3s;
 }
 
-.cup:hover .tooltip {
-  opacity: 1;
+/* Hover desktop */
+@media (hover: hover) {
+  .cup:hover .tooltip {
+    opacity: 1;
+  }
 }
 
 /* ===== CAKE ===== */
 .cake {
   position: relative;
-  width: 180px;
+  width: clamp(130px, 30vw, 180px);
   cursor: pointer;
 }
 
 .layer {
-  height: 40px;
+  height: clamp(28px, 6vw, 40px);
   border-radius: 10px;
 }
 
@@ -150,8 +157,9 @@ body {
 
 .candle {
   position: absolute;
-  top: -40px;
-  left: 85px;
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 10px;
   height: 35px;
   background: #3fd2b8;
@@ -171,7 +179,7 @@ body {
 .table {
   position: fixed;
   bottom: 0;
-  height: 160px;
+  height: clamp(120px, 20vw, 160px);
   width: 100%;
   background: linear-gradient(#4a2d1a, #2a160c);
 }
@@ -179,10 +187,10 @@ body {
 /* ===== BUTTONS ===== */
 .controls {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  bottom: 16px;
+  left: 16px;
   display: flex;
-  gap: 15px;
+  gap: 12px;
   z-index: 10;
 }
 
@@ -190,9 +198,10 @@ body {
   background: #00754a;
   color: white;
   border: none;
-  padding: 12px 18px;
+  padding: 10px 16px;
   border-radius: 25px;
   cursor: pointer;
+  font-size: clamp(0.8rem, 2.5vw, 1rem);
 }
 
 /* ===== LETTER MODAL ===== */
@@ -204,12 +213,13 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 30;
+  padding: 16px;
 }
 
 .letter {
   background: white;
-  width: 360px;
-  max-height: 70vh;
+  width: min(420px, 100%);
+  max-height: 80vh;
   padding: 22px;
   border-radius: 16px;
   overflow-y: auto;
@@ -233,14 +243,14 @@ body {
     <span></span><span></span><span></span>
   </div>
   <div class="menu-panel" id="menuPanel">
-    <a href="album.html">📸 Photo Album</a>
-    <a href="song.html">🎶 Songs</a>
+    <a href="album.html"> Photo Album</a>
+    <a href="song.html"> Songs</a>
   </div>
 </div>
 
 <!-- SCENE -->
 <div class="scene" id="scene">
-  <div class="cup">
+  <div class="cup" onclick="toggleTooltip(this)">
     <div class="tooltip">Iced Americano ☕</div>
     <div class="logo"></div>
   </div>
@@ -277,7 +287,6 @@ body {
 
       <br><br>Just know I'm always here for you for absolutely anything. Kahit 3am pa yan, alam mo nang online ako niyan LMAO. Again, happy happy birthday and I hope you enjoy your day!
       <br><br>— R
-    </p>
   </div>
 </div>
 
@@ -286,11 +295,18 @@ body {
 </audio>
 
 <script>
+const bg = document.getElementById("bg");
+const scene = document.getElementById("scene");
+const overlay = document.getElementById("overlay");
+
+/* Parallax – desktop only */
 document.addEventListener("mousemove", e => {
-  const x = (e.clientX / innerWidth - 0.5) * 20;
-  const y = (e.clientY / innerHeight - 0.5) * 20;
-  bg.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
-  scene.style.transform = `translate(${x/2}px, ${y/2}px)`;
+  if (window.innerWidth > 768) {
+    const x = (e.clientX / innerWidth - 0.5) * 20;
+    const y = (e.clientY / innerHeight - 0.5) * 20;
+    bg.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+    scene.style.transform = `translate(${x/2}px, ${y/2}px)`;
+  }
 });
 
 function toggleMenu() {
@@ -308,6 +324,12 @@ function closeLetter() {
 
 function blowCandle() {
   document.getElementById("flame").style.display = "none";
+}
+
+/* Tooltip tap for mobile */
+function toggleTooltip(cup) {
+  const tip = cup.querySelector(".tooltip");
+  tip.style.opacity = tip.style.opacity === "1" ? "0" : "1";
 }
 
 const music = document.getElementById("music");

@@ -15,8 +15,9 @@
 }
 
 body {
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
   color: white;
   background: black;
 }
@@ -27,7 +28,7 @@ body {
   inset: 0;
   background:
     linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
-    url("./assets/starbucks.jpg"); /* CHANGE IMAGE HERE */
+    url("./assets/starbucks.jpg");
   background-size: cover;
   background-position: center;
   z-index: -2;
@@ -45,49 +46,90 @@ body {
 }
 .dim.active { opacity: 1; }
 
-/* ================= HAMBURGER & TITLE ================= */
-.menu { position: fixed; top: 20px; left: 20px; z-index: 50; }
-.menu-btn { width: 35px; height: 25px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
-.menu-btn span { height: 4px; background: white; border-radius: 5px; }
-.menu-panel { position: absolute; top: 50px; left: 0; background: rgba(0,0,0,0.85); padding: 15px; border-radius: 12px; display: none; }
-.menu-panel a { display: block; background: #00754a; color: white; text-decoration: none; padding: 10px 16px; border-radius: 20px; margin-top: 8px; text-align: center; }
+/* ================= MENU ================= */
+.menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 50;
+}
 
+.menu-btn {
+  width: 32px;
+  height: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.menu-btn span {
+  height: 4px;
+  background: white;
+  border-radius: 5px;
+}
+
+.menu-panel {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  background: rgba(0,0,0,0.85);
+  padding: 14px;
+  border-radius: 12px;
+  display: none;
+}
+
+.menu-panel a {
+  display: block;
+  background: #00754a;
+  color: white;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* ================= TITLE ================= */
 h1 {
   position: fixed;
-  top: 30px;
+  top: 26px;
   width: 100%;
   text-align: center;
   font-weight: 500;
   letter-spacing: 1px;
+  font-size: clamp(1.4rem, 5vw, 2.2rem);
   z-index: 10;
+  padding: 0 16px;
 }
 
 /* ================= 3D CAROUSEL ================= */
 .carousel-wrap {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  perspective: 2000px;
+  perspective: 1800px;
   z-index: 5;
 }
 
 .carousel {
   position: relative;
-  width: 320px;
-  height: 420px;
+  width: clamp(240px, 70vw, 340px);
+  height: clamp(320px, 80vw, 440px);
   transform-style: preserve-3d;
   animation: spin 18s linear infinite;
   transition: transform 0.5s ease;
 }
+
 .carousel.paused { animation-play-state: paused; }
 
 /* ================= CARDS ================= */
 .card {
   position: absolute;
-  width: 180px;
-  height: 280px;
+  width: clamp(140px, 42vw, 190px);
+  height: clamp(220px, 60vw, 290px);
   left: 50%;
   top: 50%;
   border-radius: 18px;
@@ -104,7 +146,7 @@ h1 {
   object-fit: cover;
 }
 
-/* Position Variables */
+/* ================= POSITION ================= */
 .card:nth-child(1) { --rot: 0deg; }
 .card:nth-child(2) { --rot: 60deg; }
 .card:nth-child(3) { --rot: 120deg; }
@@ -113,21 +155,35 @@ h1 {
 .card:nth-child(6) { --rot: 300deg; }
 
 .card {
-  transform: translate(-50%, -50%) rotateY(var(--rot)) translateZ(350px);
+  transform: translate(-50%, -50%) rotateY(var(--rot)) translateZ(clamp(220px, 55vw, 360px));
 }
 
-/* ================= PUNCH THROUGH EFFECT ================= */
-.carousel:hover .card {
-  filter: brightness(0.3) grayscale(0.5);
+/* ================= EFFECT ================= */
+@media (hover: hover) {
+  .carousel:hover .card {
+    filter: brightness(0.3) grayscale(0.5);
+  }
+
+  .carousel .card:hover {
+    filter: brightness(1.2) grayscale(0) !important;
+    transform:
+      translate(-50%, -50%)
+      rotateY(var(--rot))
+      translateZ(clamp(280px, 65vw, 440px))
+      scale(1.2);
+    box-shadow: 0 0 50px rgba(255,255,255,0.3);
+    z-index: 100;
+  }
 }
 
-.carousel .card:hover {
-  filter: brightness(1.2) grayscale(0) !important;
-  transform: translate(-50%, -50%) rotateY(var(--rot)) translateZ(450px) scale(1.2);
-  box-shadow: 0 0 50px rgba(255,255,255,0.3);
-  z-index: 100;
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .carousel {
+    animation-duration: 22s;
+  }
 }
 
+/* ================= SPIN ================= */
 @keyframes spin {
   from { transform: rotateY(0deg); }
   to { transform: rotateY(360deg); }
@@ -137,7 +193,6 @@ h1 {
 
 <body>
 
-<!-- BACKGROUND -->
 <div class="background"></div>
 <div class="dim" id="dim"></div>
 
@@ -175,14 +230,27 @@ function toggleMenu() {
 const carousel = document.getElementById("carousel");
 const dim = document.getElementById("dim");
 
+/* Desktop hover */
 carousel.addEventListener("mouseenter", () => {
-  carousel.classList.add("paused");
-  dim.classList.add("active");
+  if (window.innerWidth > 768) {
+    carousel.classList.add("paused");
+    dim.classList.add("active");
+  }
 });
 
 carousel.addEventListener("mouseleave", () => {
-  carousel.classList.remove("paused");
-  dim.classList.remove("active");
+  if (window.innerWidth > 768) {
+    carousel.classList.remove("paused");
+    dim.classList.remove("active");
+  }
+});
+
+/* Mobile tap */
+carousel.addEventListener("click", () => {
+  if (window.innerWidth <= 768) {
+    carousel.classList.toggle("paused");
+    dim.classList.toggle("active");
+  }
 });
 </script>
 
