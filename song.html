@@ -26,10 +26,11 @@ body {
   inset: 0;
   background:
     linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
-    url("./assets/starbucks.jpg"); /* CHANGE BG IMAGE HERE */
+    url("./assets/starbucks.jpg");
   background-size: cover;
   background-position: center;
   z-index: -1;
+  transition: transform 0.2s ease;
 }
 
 /* ===== HAMBURGER ===== */
@@ -129,7 +130,6 @@ h1 {
   height: 60px;
   border-radius: 10px;
   overflow: hidden;
-  flex-shrink: 0;
 }
 
 .album-art img {
@@ -186,8 +186,8 @@ h1 {
 }
 
 @keyframes bounce {
-  0%   { height: 6px; }
-  50%  { height: 18px; }
+  0% { height: 6px; }
+  50% { height: 18px; }
   100% { height: 6px; }
 }
 
@@ -203,7 +203,6 @@ h1 {
   padding: 12px 18px;
   cursor: pointer;
   border-radius: 50%;
-  z-index: 10;
 }
 
 .prev { left: 15px; }
@@ -226,14 +225,14 @@ h1 {
   </div>
 </div>
 
-<h1> Songs That Remind Me of You</h1>
+<h1>Songs That Remind Me of You</h1>
 
 <div class="carousel-wrapper">
   <button class="nav prev" onclick="scrollSongs(-1)">‹</button>
 
   <div class="carousel" id="songs">
 
-    <div class="song">
+    <div class="song" data-audio="./assets/leonora.mp3">
       <div class="album-art"><img src="./assets/leonora.jpg"></div>
       <div class="song-info">
         <div class="song-title">Leonora</div>
@@ -242,7 +241,7 @@ h1 {
       <div class="equalizer"><span></span><span></span><span></span></div>
     </div>
 
-    <div class="song">
+    <div class="song" data-audio="./assets/fallen.mp3">
       <div class="album-art"><img src="./assets/fallen.jpg"></div>
       <div class="song-info">
         <div class="song-title">Fallen</div>
@@ -251,7 +250,7 @@ h1 {
       <div class="equalizer"><span></span><span></span><span></span></div>
     </div>
 
-    <div class="song">
+    <div class="song" data-audio="./assets/araw.mp3">
       <div class="album-art"><img src="./assets/araw.jpg"></div>
       <div class="song-info">
         <div class="song-title">Araw-Araw</div>
@@ -260,7 +259,7 @@ h1 {
       <div class="equalizer"><span></span><span></span><span></span></div>
     </div>
 
-    <div class="song">
+    <div class="song" data-audio="./assets/mahika.mp3">
       <div class="album-art"><img src="./assets/mahika.jpg"></div>
       <div class="song-info">
         <div class="song-title">Mahika</div>
@@ -269,11 +268,29 @@ h1 {
       <div class="equalizer"><span></span><span></span><span></span></div>
     </div>
 
-    <div class="song">
+    <div class="song" data-audio="./assets/manila.mp3">
       <div class="album-art"><img src="./assets/manila.jpg"></div>
       <div class="song-info">
         <div class="song-title">Raining In Manila</div>
         <div class="artist">by Lola Amour</div>
+      </div>
+      <div class="equalizer"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="song" data-audio="./assets/panalangin.mp3">
+      <div class="album-art"><img src="./assets/panalangin.jpg"></div>
+      <div class="song-info">
+        <div class="song-title">Panalangin</div>
+        <div class="artist">by APO Hiking Society</div>
+      </div>
+      <div class="equalizer"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="song" data-audio="./assets/look.mp3">
+      <div class="album-art"><img src="./assets/look.jpg"></div>
+      <div class="song-info">
+        <div class="song-title">Look After You</div>
+        <div class="artist">by The Fray</div>
       </div>
       <div class="equalizer"><span></span><span></span><span></span></div>
     </div>
@@ -284,11 +301,34 @@ h1 {
 </div>
 
 <script>
-const songs = document.getElementById("songs");
+const carousel = document.getElementById("songs");
 const bg = document.getElementById("bg");
+const songCards = document.querySelectorAll(".song");
+
+let currentAudio = null;
+
+songCards.forEach(card => {
+  const audio = new Audio(card.dataset.audio);
+  audio.volume = 0.6;
+
+  card.addEventListener("mouseenter", () => {
+    if (currentAudio && currentAudio !== audio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+    currentAudio = audio;
+    audio.currentTime = 0;
+    audio.play();
+  });
+
+  card.addEventListener("mouseleave", () => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+});
 
 function scrollSongs(dir) {
-  songs.scrollBy({ left: dir * 260, behavior: "smooth" });
+  carousel.scrollBy({ left: dir * 260, behavior: "smooth" });
 }
 
 function toggleMenu() {
